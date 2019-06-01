@@ -3,7 +3,7 @@ title: "Reproducible Research: Peer Assessment 1"
 author: "Shenay"
 date: "June 2, 2019"
 output: 
-  html_document: 
+  html_document:
     keep_md: yes
 ---
 
@@ -16,7 +16,7 @@ output:
 
 
 ```r
-setwd("C:/Users/sheng/Coursera")
+setwd("C:/Users/sheng/Coursera/RepData_PeerAssessment1")
 if (!file.exists("./data")) {dir.create("./data")}
 fileURL <- "https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip"
 download.file(fileURL, destfile = "./data/activity.zip", mode = "wb")
@@ -61,8 +61,6 @@ data$date <- as.Date(data$date, format = "%Y-%m-%d")
 
 
 ```r
-png(file = "plot1.png", width = 480, height = 480)
-
 total_day <- aggregate(x = data$steps, by = list(data$date), FUN = sum, na.rm = TRUE)
 colnames(total_day) <- c("date", "steps")
 summary(total_day$steps)
@@ -77,25 +75,29 @@ summary(total_day$steps)
 hist(total_day$steps, main = "Histogram of Total Number of Steps Taken Per Day",
      xlab = "Steps", border = "royalblue4", col = "royalblue", las = 1)
 abline(v = mean(total_day$steps), lwd = 2)
-
-dev.off()
 ```
 
+![](Figs/plot1-1.png)<!-- -->
+
+```r
+plot(total_day$date, total_day$steps, type = "h", main = "Total Number of Steps Taken Per Day",
+     sub = "Note: Period from 2012-10-01 to 2012-11-30", xlab = "", ylab = "Steps", col = rainbow(15), lwd = 2)
+abline(h = mean(total_day$steps), col = "gray")
+abline(h = median(total_day$steps), col = "gray50")
+legend("topleft", legend = c(paste("Mean =", round(mean(total_day$steps))),
+                             paste("Median =", round(median(total_day$steps)))))
 ```
-## png 
-##   2
-```
+
+![](Figs/plot1-2.png)<!-- -->
 
 
 ## What is the average daily activity pattern?
 
 * Make a time series plot of the 5-minute interval and the average number of steps taken, averaged across all days
-* Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
+* Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps
 
 
 ```r
-png(file = "plot2.png", width = 480, height = 480)
-
 avg_day <- aggregate(x = data$steps, by = list(data$interval), FUN = mean, na.rm = TRUE)
 colnames(avg_day) <- c("interval", "avg.steps")
 summary(avg_day$avg.steps)
@@ -116,14 +118,9 @@ ggplot(avg_day, aes(x = interval)) +
         annotate("label", x = max(avg_day$avg.steps), y = mean(avg_day$avg.steps), label = "Mean") +
         annotate("label", x = max(avg_day$avg.steps), y = max(avg_day$avg.steps), label = "Maximum") +
         theme_classic()
-
-dev.off()
 ```
 
-```
-## png 
-##   2
-```
+![](Figs/plot2-1.png)<!-- -->
 
 ## Imputing missing values
 
@@ -134,8 +131,6 @@ dev.off()
 
 
 ```r
-png(file = "plot3.png", width = 480, height = 480)
-
 sum(is.na(data$steps), na.rm = TRUE)
 ```
 
@@ -166,14 +161,9 @@ summary(newtotal_day$steps)
 ```r
 hist(newtotal_day$steps, main = "Histogram of Total Number of Steps Taken Per Day",
      xlab = "Steps", border = "lightskyblue4", col = "lightskyblue", las = 1)
-
-dev.off()
 ```
 
-```
-## png 
-##   2
-```
+![](Figs/plot3-1.png)<!-- -->
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
@@ -183,8 +173,6 @@ dev.off()
 
 
 ```r
-png(file = "plot4.png", width = 480, height = 480)
-
 wkday <- c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday")
 
 new_data$weekday <- factor((weekdays(new_data$date) %in% wkday),
@@ -200,12 +188,7 @@ ggplot(newavg_day, aes(x = interval)) +
         labs(title = "Time Series Plot of Average Number of Steps Taken",
              x = "Interval", y = "Steps") +
         theme_classic()
-
-dev.off()
 ```
 
-```
-## png 
-##   2
-```
+![](Figs/plot4-1.png)<!-- -->
 
